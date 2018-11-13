@@ -1,0 +1,23 @@
+{
+  "name": "sanakortit_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.350.0",
+    "serverless-appsync-plugin": "^1.0.5"
+  },
+  "scripts": {
+    "deploy": "./node_modules/.bin/serverless deploy -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mirkka/sanakortit_backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mirkka/sanakortit_backend/issues"
+  },
+  "homepage": "https://github.com/mirkka/sanakortit_backend#readme"
+}

@@ -1,0 +1,273 @@
+service: serverless-graphql-appsync-lda
+
+frameworkVersion: ">=1.21.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: eu-central-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+        - dynamodb:UpdateItem
+        - dynamodb:Query
+        - dynamodb:Scan
+      Resource: "arn:aws:dynamodb:${self:custom.region}:*:*"
+
+plugins:
+  - serverless-appsync-plugin
+
+functions:
+  deleteDeckResolver:
+    handler: lambda/deleteDeckResolver.handler
+  createCardResolver:
+    handler: lambda/createCardResolver.handler
+  updateCardsResolver:
+    handler: lambda/updateCardsResolver.handler
+  updateStudyCardResolver:
+    handler: lambda/updateStudyCardResolver.handler
+  getStudyCardResolver:
+    handler: lambda/getStudyCardResolver.handler
+  dueResolver:
+    handler: lambda/dueResolver.handler
+  amountResolver:
+    handler: lambda/amountResolver.handler
+
+custom:
+  accountId: 997315957991
+  region: 'eu-central-1'
+  appSync:
+    name:  APIsanakortit
+    authenticationType: API_KEY
+    dataSources:
+    - type: AMAZON_DYNAMODB
+      name: DeckTable
+      description: "DynamoDB Deck Table"
+      config:
+        tableName: { Ref: DeckTable }
+    - type: AMAZON_DYNAMODB
+      name: CardTable
+      description: "DynamoDB Card Table"
+      config:
+        tableName: { Ref: CardTable }
+    - type: AWS_LAMBDA
+      name: deleteDeckResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-deleteDeckResolver"
+    - type: AWS_LAMBDA
+      name: createCardResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-createCardResolver"
+    - type: AWS_LAMBDA
+      name: updateCardsResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-updateCardsResolver"
+    - type: AWS_LAMBDA
+      name: updateStudyCardResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-updateStudyCardResolver"
+    - type: AWS_LAMBDA
+      name: getStudyCardResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-getStudyCardResolver"
+    - type: AWS_LAMBDA
+      name: dueResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-dueResolver"
+    - type: AWS_LAMBDA
+      name: amountResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-amountResolver"
+    mappingTemplatesLocation: mapping-templates
+    mappingTemplates:
+      - dataSource: DeckTable
+        type: Mutation
+        field: createDeck
+        request: "createDeckResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: DeckTable
+        type: Mutation
+        field: updateDeck
+        request: "updateDeckResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: CardTable
+        type: Mutation
+        field: updateCard
+        request: "updateCardResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: CardTable
+        type: Mutation
+        field: deleteCard
+        request: "deleteCardResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: DeckTable
+        type: Query
+        field: getDeck
+        request: "getDeckResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: DeckTable
+        type: Query
+        field: listDecks
+        request: "listDecksResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: CardTable
+        type: Query
+        field: getCard
+        request: "getCardResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: CardTable
+        type: Query
+        field: listCards
+        request: "listCardsResolver-request.txt"
+        response: "generic-response.txt"
+      # lambda datasource resolvers
+      - dataSource: dueResolver
+        type: Deck
+        field: due
+        request: "dueResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: amountResolver
+        type: Deck
+        field: cardAmount
+        request: "amountResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: deleteDeckResolver
+        type: Mutation
+        field: deleteDeck
+        request: "deleteDeckResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: deleteDeckResolver
+        type: Mutation
+        field: createCard
+        request: "createCardResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: deleteDeckResolver
+        type: Mutation
+        field: updateCards
+        request: "updateCardsResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: deleteDeckResolver
+        type: Mutation
+        field: updateStudyCard
+        request: "updateStudyCardResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: deleteDeckResolver
+        type: Query
+        field: studyCard
+        request: "getStudyCardResolver-request.txt"
+        response: "generic-response.txt"
+    schema: 'schema.graphql'
+
+resources:
+  Resources:
+    AppSyncServiceRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        Path: /service-role/
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "appsync.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          -
+            PolicyName: "Lambda-AppSyncServiceRole-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "lambda:invokeFunction"
+                  Resource:
+                    - "arn:aws:lambda:eu-central-1:${self:custom.accountId}:function:*"
+    DeckTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: "DeckTable"
+    CardTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: deckId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: "CardTable"
+        GlobalSecondaryIndexes:
+          - IndexName: deckId-index
+            KeySchema:
+            - AttributeName: deckId
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: '5'
+              WriteCapacityUnits: '5'
+    AppSyncDynamoDBPolicy:
+      Type: "AWS::IAM::ManagedPolicy"
+      Properties:
+        Description: "Managed Policy to allow AWS AppSync to access tables in DynamoDB"
+        Path: /service-role/
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:DeleteItem
+                - dynamodb:UpdateItem
+                - dynamodb:Query
+                - dynamodb:Scan
+              Resource: "*"
+
+    DynamoDBRole:
+      Type: "AWS::IAM::Role"
+      Description: "IAM Role for allowing AppSync to access DynamoDB"
+      DependsOn:
+        - AppSyncDynamoDBPolicy
+      Properties:
+        RoleName: APIsanakortit-appsync-dynamodb-role
+        ManagedPolicyArns:
+          - Ref: AppSyncDynamoDBPolicy
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Principal:
+                Service:
+                  - appsync.amazonaws.com

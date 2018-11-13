@@ -1,0 +1,175 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Card {
+  back: String
+  deckId: ID
+  front: String
+  id: ID
+  level: Int
+  tags: String
+  weight: AWSTimestamp
+}
+
+type CardConnection {
+  items: [Card]
+  nextToken: String
+}
+
+type Deck {
+  cardAmount: Int
+  created: AWSTimestamp
+  due: Int
+  id: ID
+  name: String
+}
+
+type DeckConnection {
+  items: [Deck]
+  nextToken: String
+}
+
+type Mutation {
+  createCard(input: CreateCardInput): Card
+  createDeck(input: CreateDeckInput): Deck
+  deleteCard(input: DeleteCardInput!): Card
+  deleteDeck(input: DeleteDeckInput): Deck
+  updateCard(input: UpdateCardInput): Card
+  updateCards(input: UpdateCardsInput): [Card]
+  updateDeck(input: UpdateDeckInput): Deck
+  updateStudyCard(input: UpdateStudyCardInput): Card
+}
+
+type Query {
+  getCard(id: ID): Card
+  getDeck(id: ID!): Deck
+  listCards(filter: TableCardFilterInput, limit: Int, nextToken: String): CardConnection
+  listDecks(filter: TableDeckFilterInput, limit: Int, nextToken: String): DeckConnection
+  studyCard(deckId: ID): Card
+}
+
+type Subscription {
+  onCreateCard(back: String, front: String, tags: [String]): Card @aws_subscribe(mutations : ["createCard"])
+  onCreateDeck(name: String): Deck @aws_subscribe(mutations : ["createDeck"])
+  onDeleteCard(back: String, front: String, level: Int, tags: String, weight: AWSTimestamp): Card @aws_subscribe(mutations : ["deleteCard"])
+  onDeleteDeck(cardAmount: Int, due: Int, id: ID, name: String): Deck @aws_subscribe(mutations : ["deleteDeck"])
+  onUpdateCard(back: String, front: String, tags: String): Card @aws_subscribe(mutations : ["updateCard"])
+  onUpdateDeck(cardAmount: Int, due: Int, id: ID, name: String): Deck @aws_subscribe(mutations : ["updateDeck"])
+}
+
+input CreateCardInput {
+  back: String
+  deckId: ID
+  front: String
+  tags: String
+}
+
+input CreateDeckInput {
+  name: String
+}
+
+input DeleteCardInput {
+  id: ID!
+}
+
+input DeleteDeckInput {
+  id: String
+}
+
+input TableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input TableCardFilterInput {
+  back: TableStringFilterInput
+  deckId: TableIDFilterInput
+  front: TableStringFilterInput
+  id: TableIDFilterInput
+  level: TableIntFilterInput
+  tags: TableStringFilterInput
+  weight: TableIntFilterInput
+}
+
+input TableDeckFilterInput {
+  created: TableIntFilterInput
+  id: TableIDFilterInput
+  name: TableStringFilterInput
+  updated: TableIntFilterInput
+}
+
+input TableFloatFilterInput {
+  between: [Float]
+  contains: Float
+  eq: Float
+  ge: Float
+  gt: Float
+  le: Float
+  lt: Float
+  ne: Float
+  notContains: Float
+}
+
+input TableIDFilterInput {
+  beginsWith: ID
+  between: [ID]
+  contains: ID
+  eq: ID
+  ge: ID
+  gt: ID
+  le: ID
+  lt: ID
+  ne: ID
+  notContains: ID
+}
+
+input TableIntFilterInput {
+  between: [Int]
+  contains: Int
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+  notContains: Int
+}
+
+input TableStringFilterInput {
+  beginsWith: String
+  between: [String]
+  contains: String
+  eq: String
+  ge: String
+  gt: String
+  le: String
+  lt: String
+  ne: String
+  notContains: String
+}
+
+input UpdateCardInput {
+  back: String
+  front: String
+  id: ID
+  tags: String
+}
+
+input UpdateCardsInput {
+  deckId: ID
+}
+
+input UpdateDeckInput {
+  id: ID
+  name: String
+}
+
+input UpdateStudyCardInput {
+  action: String
+  deckId: ID
+  id: ID
+  level: Int
+}
