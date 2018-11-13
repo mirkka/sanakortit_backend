@@ -147,22 +147,22 @@ custom:
         field: deleteDeck
         request: "deleteDeckResolver-request.txt"
         response: "generic-response.txt"
-      - dataSource: deleteDeckResolver
+      - dataSource: createCardResolver
         type: Mutation
         field: createCard
         request: "createCardResolver-request.txt"
         response: "generic-response.txt"
-      - dataSource: deleteDeckResolver
+      - dataSource: updateCardsResolver
         type: Mutation
         field: updateCards
         request: "updateCardsResolver-request.txt"
         response: "generic-response.txt"
-      - dataSource: deleteDeckResolver
+      - dataSource: updateStudyCardResolver
         type: Mutation
         field: updateStudyCard
         request: "updateStudyCardResolver-request.txt"
         response: "generic-response.txt"
-      - dataSource: deleteDeckResolver
+      - dataSource: getStudyCardResolver
         type: Query
         field: studyCard
         request: "getStudyCardResolver-request.txt"
