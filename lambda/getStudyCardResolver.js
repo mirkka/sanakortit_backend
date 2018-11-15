@@ -14,7 +14,6 @@ exports.handler = async (deckId) => {
         KeyConditionExpression: "deckId = :deckId",
     }
     const response = await dynamoDb.query(getCardsParams).promise()
-    console.log(JSON.stringify(response))
     const sortedCards = response.Items.sort((a, b) => {
         return a.weight - b.weight
     })

@@ -36,6 +36,8 @@ functions:
     handler: lambda/dueResolver.handler
   amountResolver:
     handler: lambda/amountResolver.handler
+  searchCardsResolver:
+    handler: lambda/searchCardsResolver.handler
 
 custom:
   accountId: 997315957991
@@ -89,6 +91,11 @@ custom:
       description: 'Lambda DataSource'
       config:
         lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-amountResolver"
+    - type: AWS_LAMBDA
+      name: searchCardsResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-searchCardsResolver"
     mappingTemplatesLocation: mapping-templates
     mappingTemplates:
       - dataSource: DeckTable
@@ -166,6 +173,11 @@ custom:
         type: Query
         field: studyCard
         request: "getStudyCardResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: searchCardsResolver
+        type: Query
+        field: searchCards
+        request: "searchCardsResolver-request.txt"
         response: "generic-response.txt"
     schema: 'schema.graphql'
 

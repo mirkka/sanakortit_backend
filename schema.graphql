@@ -48,6 +48,7 @@ type Query {
   getDeck(id: ID!): Deck
   listCards(filter: TableCardFilterInput, limit: Int, nextToken: String): CardConnection
   listDecks(filter: TableDeckFilterInput, limit: Int, nextToken: String): DeckConnection
+  searchCards(searchParams: SearchParamsInput): CardConnection
   studyCard(deckId: ID): Card
 }
 
@@ -79,6 +80,11 @@ input DeleteDeckInput {
   id: String
 }
 
+input SearchParamsInput {
+  deckId: ID
+  phrase: String
+}
+
 input TableBooleanFilterInput {
   eq: Boolean
   ne: Boolean
@@ -91,7 +97,7 @@ input TableCardFilterInput {
   id: TableIDFilterInput
   level: TableIntFilterInput
   tags: TableStringFilterInput
-  weight: TableIntFilterInput
+  weight: TableFloatFilterInput
 }
 
 input TableDeckFilterInput {
