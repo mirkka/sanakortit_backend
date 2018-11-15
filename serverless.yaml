@@ -38,6 +38,8 @@ functions:
     handler: lambda/amountResolver.handler
   searchCardsResolver:
     handler: lambda/searchCardsResolver.handler
+  listTagsResolver:
+    handler: lambda/listTagsResolver.handler
 
 custom:
   accountId: 997315957991
@@ -96,6 +98,11 @@ custom:
       description: 'Lambda DataSource'
       config:
         lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-searchCardsResolver"
+    - type: AWS_LAMBDA
+      name: listTagsResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-listTagsResolver"
     mappingTemplatesLocation: mapping-templates
     mappingTemplates:
       - dataSource: DeckTable
@@ -178,6 +185,11 @@ custom:
         type: Query
         field: searchCards
         request: "searchCardsResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: listTagsResolver
+        type: Query
+        field: listTags
+        request: "listTagsResolver-request.txt"
         response: "generic-response.txt"
     schema: 'schema.graphql'
 

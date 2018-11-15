@@ -48,6 +48,7 @@ type Query {
   getDeck(id: ID!): Deck
   listCards(filter: TableCardFilterInput, limit: Int, nextToken: String): CardConnection
   listDecks(filter: TableDeckFilterInput, limit: Int, nextToken: String): DeckConnection
+  listTags(deckId: ID): TagsConnection
   searchCards(searchParams: SearchParamsInput): CardConnection
   studyCard(deckId: ID): Card
 }
@@ -59,6 +60,10 @@ type Subscription {
   onDeleteDeck(cardAmount: Int, due: Int, id: ID, name: String): Deck @aws_subscribe(mutations : ["deleteDeck"])
   onUpdateCard(back: String, front: String, tags: String): Card @aws_subscribe(mutations : ["updateCard"])
   onUpdateDeck(cardAmount: Int, due: Int, id: ID, name: String): Deck @aws_subscribe(mutations : ["updateDeck"])
+}
+
+type TagsConnection {
+  tags: [String]
 }
 
 input CreateCardInput {

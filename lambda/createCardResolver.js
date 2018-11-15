@@ -9,6 +9,7 @@ exports.handler = async (args) => {
         back: card.back,
         deckId: card.deckId,
         weight: Date.now(),
+        tags: card.tags,
         level: 0,
         id: id
     }
