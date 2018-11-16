@@ -88,6 +88,7 @@ input DeleteDeckInput {
 input SearchParamsInput {
   deckId: ID
   phrase: String
+  tag: String
 }
 
 input TableBooleanFilterInput {

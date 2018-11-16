@@ -2,7 +2,7 @@ const AWS = require('aws-sdk')
 const dynamoDb = new AWS.DynamoDB.DocumentClient()
 
 exports.handler = async (event) => {
-  const {deckId, phrase} = event;
+  const {deckId, phrase, tag} = event;
 
   const params = {
     ExpressionAttributeValues: {
@@ -30,6 +30,18 @@ exports.handler = async (event) => {
       items: uniqueCards.filter(item => item.deckId === deckId)
     }
   }
+
+  if(tag) {
+    return {
+      items: uniqueCards.filter(item => {
+        const tagsArr = item.tags.split(',')
+        if(tagsArr.find(itemTag => itemTag === tag)) {
+          return item
+        }
+      })
+    }
+  }
+
   return {
     items: uniqueCards
   }
