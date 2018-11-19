@@ -168,6 +168,7 @@ input UpdateCardInput {
   front: String
   id: ID
   tags: String
+  deckId: ID
 }
 
 input UpdateCardsInput {
