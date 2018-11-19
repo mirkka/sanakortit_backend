@@ -35,7 +35,7 @@ type DeckConnection {
 type Mutation {
   createCard(input: CreateCardInput): Card
   createDeck(input: CreateDeckInput): Deck
-  deleteCard(input: DeleteCardInput!): Card
+  deleteCard(input: DeleteCardInput): Card
   deleteDeck(input: DeleteDeckInput): Deck
   updateCard(input: UpdateCardInput): Card
   updateCards(input: UpdateCardsInput): [Card]
@@ -78,7 +78,7 @@ input CreateDeckInput {
 }
 
 input DeleteCardInput {
-  id: ID!
+  id: ID
 }
 
 input DeleteDeckInput {
