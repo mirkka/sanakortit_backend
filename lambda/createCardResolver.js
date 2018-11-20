@@ -4,15 +4,19 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 exports.handler = async (args) => {
     const card = args[0]
     const id = args[1].S
-    const newCard = {
+    let newCard = {
         front: card.front,
         back: card.back,
         deckId: card.deckId,
         weight: Date.now(),
-        tags: card.tags,
         level: 0,
         id: id
     }
+
+    if(card.tags !== null) {
+        newCard.tags = card.tags
+    }
+
     const params = {
         TableName:'CardTable',
         Item:newCard
