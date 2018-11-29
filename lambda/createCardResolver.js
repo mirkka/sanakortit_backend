@@ -10,7 +10,8 @@ exports.handler = async (args) => {
         deckId: card.deckId,
         weight: Date.now(),
         level: 0,
-        id: id
+        id: id,
+        author: card.author
     }
 
     if(card.tags !== null) {

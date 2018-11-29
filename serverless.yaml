@@ -40,13 +40,26 @@ functions:
     handler: lambda/searchCardsResolver.handler
   listTagsResolver:
     handler: lambda/listTagsResolver.handler
+  listDecksResolver:
+    handler: lambda/listDecksResolver.handler
+  preSignUp:
+    handler: lambda/preSignUp.handler
+    events:
+    - CognitoUserPoolMyUserPool:
+        pool: sanakortit-user-pool
+        trigger: PreSignUp
+
 
 custom:
   accountId: 997315957991
   region: 'eu-central-1'
   appSync:
     name:  APIsanakortit
-    authenticationType: API_KEY
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: eu-central-1
+      defaultAction: ALLOW
+      userPoolId: { Ref: CognitoUserPoolMyUserPool }
     dataSources:
     - type: AMAZON_DYNAMODB
       name: DeckTable
@@ -103,6 +116,11 @@ custom:
       description: 'Lambda DataSource'
       config:
         lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-listTagsResolver"
+    - type: AWS_LAMBDA
+      name: listDecksResolver
+      description: 'Lambda DataSource'
+      config:
+        lambdaFunctionArn: "arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function:serverless-graphql-appsync-lda-dev-listDecksResolver"
     mappingTemplatesLocation: mapping-templates
     mappingTemplates:
       - dataSource: DeckTable
@@ -129,22 +147,17 @@ custom:
         type: Query
         field: getDeck
         request: "getDeckResolver-request.txt"
-        response: "generic-response.txt"
-      - dataSource: DeckTable
-        type: Query
-        field: listDecks
-        request: "listDecksResolver-request.txt"
-        response: "generic-response.txt"
+        response: "itemForUser-response.txt"
       - dataSource: CardTable
         type: Query
         field: getCard
         request: "getCardResolver-request.txt"
-        response: "generic-response.txt"
+        response: "itemForUser-response.txt"
       - dataSource: CardTable
         type: Query
         field: listCards
         request: "listCardsResolver-request.txt"
-        response: "generic-response.txt"
+        response: "listItemsForUser-response.txt"
       # lambda datasource resolvers
       - dataSource: dueResolver
         type: Deck
@@ -155,6 +168,11 @@ custom:
         type: Deck
         field: cardAmount
         request: "amountResolver-request.txt"
+        response: "generic-response.txt"
+      - dataSource: listDecksResolver
+        type: Query
+        field: listDecks
+        request: "listDecksResolver-request.txt"
         response: "generic-response.txt"
       - dataSource: deleteDeckResolver
         type: Mutation
@@ -185,7 +203,7 @@ custom:
         type: Query
         field: searchCards
         request: "searchCardsResolver-request.txt"
-        response: "generic-response.txt"
+        response: "listItemsForUser-response.txt"
       - dataSource: listTagsResolver
         type: Query
         field: listTags
@@ -295,3 +313,38 @@ resources:
               Principal:
                 Service:
                   - appsync.amazonaws.com
+    CognitoUserPoolMyUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: sanakortit-user-pool
+        LambdaConfig:
+          PreSignUp:
+            "Fn::GetAtt": [ PreSignUpLambdaFunction, Arn ]
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: sanakortit_app
+        UserPoolId:
+          Ref: CognitoUserPoolMyUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+    MyLambdaInvocationPermission:
+      Type: AWS::Lambda::Permission
+      DependsOn:
+        - CognitoUserPoolMyUserPool
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName:
+          "Fn::GetAtt": [ PreSignUpLambdaFunction, Arn ]
+        Principal: cognito-idp.amazonaws.com
+        SourceArn:
+          "Fn::GetAtt": [ CognitoUserPoolMyUserPool, Arn ]
+Outputs:
+  UserPoolId:
+    Value:
+      Ref: sanakortit-user-pool
+
+  UserPoolClientId:
+    Value:
+      Ref: sanakortit_app

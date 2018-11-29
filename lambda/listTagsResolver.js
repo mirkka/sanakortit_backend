@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk')
 const dynamoDb = new AWS.DynamoDB.DocumentClient()
 
-exports.handler = async () => {
+exports.handler = async (user) => {
   const params = {
     ExpressionAttributeNames: {
     "#tags": "tags",
@@ -10,7 +10,8 @@ exports.handler = async () => {
     FilterExpression: "attribute_exists(#tags)",
   }
     const response = await dynamoDb.scan(params).promise()
-    const allTags = response.Items.reduce((memo, card) => {
+    const cardsForUser = response.Items.filter(item => item.author === user)
+    const allTags = cardsForUser.reduce((memo, card) => {
       const tagsArr = card.tags.split(',')
       return [...memo, ...tagsArr]
     }, [])

@@ -5,6 +5,7 @@
 }
 
 type Card {
+  author: String
   back: String
   deckId: ID
   front: String
@@ -20,6 +21,7 @@ type CardConnection {
 }
 
 type Deck {
+  author: String
   cardAmount: Int
   created: AWSTimestamp
   due: Int
@@ -67,6 +69,7 @@ type TagsConnection {
 }
 
 input CreateCardInput {
+  author: String
   back: String
   deckId: ID
   front: String
@@ -74,6 +77,7 @@ input CreateCardInput {
 }
 
 input CreateDeckInput {
+  author: String
   name: String
 }
 
@@ -97,6 +101,7 @@ input TableBooleanFilterInput {
 }
 
 input TableCardFilterInput {
+  author: TableStringFilterInput
   back: TableStringFilterInput
   deckId: TableIDFilterInput
   front: TableStringFilterInput
@@ -107,6 +112,7 @@ input TableCardFilterInput {
 }
 
 input TableDeckFilterInput {
+  author: TableStringFilterInput
   created: TableIntFilterInput
   id: TableIDFilterInput
   name: TableStringFilterInput
@@ -165,10 +171,10 @@ input TableStringFilterInput {
 
 input UpdateCardInput {
   back: String
+  deckId: ID
   front: String
   id: ID
   tags: String
-  deckId: ID
 }
 
 input UpdateCardsInput {

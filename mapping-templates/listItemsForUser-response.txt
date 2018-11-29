@@ -1,0 +1,9 @@
+#set($myResults = [])
+#set($response = {})
+#foreach($item in $context.result.items)
+    #if($item.author == $context.identity.username)
+        #set($added = $myResults.add($item))
+    #end
+#end
+#set($response.items = $myResults)
+$utils.toJson($response)
