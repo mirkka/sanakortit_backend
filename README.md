@@ -1,6 +1,8 @@
 # sanakortit_backend
 ### Backend for sanakortit web app
 
+![alt text](https://github.com/mirkka/sanakortit_backend/blob/master/infrastructure_diagram.jpeg "Infrastructure diagram")
+
 ### deploy
 ```
 sls deploy
