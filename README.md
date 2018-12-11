@@ -1,11 +1,17 @@
 # sanakortit_backend
-## Backend for sanakortit web app
+### Backend for sanakortit web app
 
-deploy: ```sls deploy```
-
-logs: ```sls logs -f <lambda> -tail``` (lambda name as defined in functions section in yaml file)
+### deploy
+```
+sls deploy
+```
+### logs
+```
+sls logs -f <lambda> -tail
+``` 
+lambda name as defined in functions section in yaml file
   
-## technologies:
+### technologies
   - graphql
   - appsync
   - cognito
