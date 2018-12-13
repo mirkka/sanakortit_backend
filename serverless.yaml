@@ -18,12 +18,18 @@ provider:
         - dynamodb:Scan
       Resource: "arn:aws:dynamodb:${self:custom.region}:*:*"
 
+layers:
+  commonLibs:
+    path: layer
+
 plugins:
   - serverless-appsync-plugin
 
 functions:
   deleteDeckResolver:
     handler: lambda/deleteDeckResolver.handler
+    layers:
+      - {Ref: CommonLibsLambdaLayer}
   createCardResolver:
     handler: lambda/createCardResolver.handler
   updateCardsResolver:

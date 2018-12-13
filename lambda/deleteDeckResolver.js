@@ -1,5 +1,6 @@
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk')
+const dynamoDb = new AWS.DynamoDB.DocumentClient()
+const _ = require('lodash')
 
 exports.handler = async (deckId) => {
     //delete deck
@@ -27,7 +28,7 @@ exports.handler = async (deckId) => {
     }
 
     const response = await dynamoDb.query(getCardsparams).promise()
-    const updatedPromises = response.Items.map(card => {
+    const updatedPromises = _.map(response.Items, (card) => {
         const cardId = card.id
 
         const deleteParams = {
@@ -43,6 +44,7 @@ exports.handler = async (deckId) => {
 
         return dynamoDb.delete(deleteParams).promise()
     })
+
     const responsesAttr = await Promise.all(updatedPromises);
     return {id: deckId}
 };
